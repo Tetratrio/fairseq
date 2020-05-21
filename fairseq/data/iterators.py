@@ -403,6 +403,7 @@ def _lazy_chunk_iterator(itr, chunk_size):
                 pass
         chunk = LazyChunk(itr, min(chunk_size, remaining))
         remaining -= min(chunk_size, remaining)
+        yield chunk
 
         
 def _chunk_iterator(itr, chunk_size):
