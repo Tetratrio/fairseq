@@ -380,6 +380,9 @@ class LazyChunk:
         self._n_processed = 0
         self._cache = {}
         
+    def __len__(self):
+        return self.n
+        
     def __getitem__(self, index):
         while self._n_processed <= index:
             self._cache[self._n_processed] = next(self.itr)
@@ -387,7 +390,7 @@ class LazyChunk:
         return self._cache[index]
     
     def __iter__(self):
-        for i in range(self.n):
+        for i in range(len(self)):
             yield self[i]
 
             
