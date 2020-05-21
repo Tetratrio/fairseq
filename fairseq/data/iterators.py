@@ -359,7 +359,7 @@ class GroupedIterator(CountingIterator):
         n (int): number of elements consumed from this iterator
     """
 
-    def __init__(self, iterable, chunk_size, lazy=False):
+    def __init__(self, iterable, chunk_size, lazy=True):
         if lazy:
             itr = _lazy_chunk_iterator(iterable, chunk_size)
         else:
