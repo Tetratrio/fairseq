@@ -359,8 +359,11 @@ class GroupedIterator(CountingIterator):
         n (int): number of elements consumed from this iterator
     """
 
-    def __init__(self, iterable, chunk_size):
-        itr = _chunk_iterator(iterable, chunk_size)
+    def __init__(self, iterable, chunk_size, lazy=False):
+        if lazy:
+            itr = _lazy_chunk_iterator(iterable, chunk_size)
+        else:
+            itr = _chunk_iterator(iterable, chunk_size)
         super().__init__(
             itr,
             start=int(math.ceil(getattr(iterable, 'n', 0) / float(chunk_size))),
@@ -368,6 +371,7 @@ class GroupedIterator(CountingIterator):
         )
         self.chunk_size = chunk_size
 
+        
 class LazyChunk:
     
     def __init__(self, itr, chunk_size):
@@ -387,7 +391,7 @@ class LazyChunk:
             yield self[i]
 
             
-def _chunk_iterator(itr, chunk_size):
+def _lazy_chunk_iterator(itr, chunk_size):
     remaining = len(itr)
     chunk = None
     while remaining:
@@ -397,6 +401,17 @@ def _chunk_iterator(itr, chunk_size):
         chunk = LazyChunk(itr, min(chunk_size, remaining))
         remaining -= min(chunk_size, remaining)
 
+        
+def _chunk_iterator(itr, chunk_size):
+    chunk = []
+    for x in itr:
+        chunk.append(x)
+        if len(chunk) == chunk_size:
+            yield chunk
+            chunk = []
+    if len(chunk) > 0:
+        yield chunk
+        
         
 class ShardedIterator(CountingIterator):
     """A sharded wrapper around an iterable, padded to length.
