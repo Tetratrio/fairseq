@@ -136,7 +136,7 @@ class BaseProgressBar(object):
 
     def _str_commas(self, stats):
         strings = [key + '=' + stats[key].strip() for key in stats.keys()]
-        return '\n' + '\n'.join([', '.join(strings[j: j + 5]) for j in range(0, len(strings), 5)])
+        return '\n'.join([', '.join(strings[j: j + 5]) for j in range(0, len(strings), 5)]) + '\n\n'
 
     def _str_pipes(self, stats):
         return ' | '.join(key + ' ' + stats[key].strip()
